@@ -12,12 +12,6 @@ import ImageInfo from "./ImageInfo";
 
 const Gallery = props => {
     const dispatch = useDispatch();
-    const getWidth = () => window.innerWidth;
-
-    const [state, setState] = useState({
-        translate: 0,
-        transition: 0.45
-    });
 
     const images = useSelector((state) => state.gallery.images);
     const activeImageIndex = useSelector((state) => state.gallery.activeImageIndex);
