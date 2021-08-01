@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import React, {useEffect, useRef} from 'react'
+import React, {forwardRef, useEffect, useRef} from 'react'
 import {css, jsx} from '@emotion/react'
 import Arrow from "./Arrow";
 import {updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch} from "react-redux";
 
-const ImageInfo = props => {
+const ImageInfo = forwardRef((props, ref) => {
     const dispatch = useDispatch();
 
     const setActiveImageIndex = (i) => {
@@ -21,30 +21,9 @@ const ImageInfo = props => {
     }
     const image = props.image;
 
-    function keydownHandler({key}) {
-        if (key === "ArrowLeft") {
-            setActiveImageIndex(props.prevImageIndex);
-        } else if (key === "ArrowRight") {
-            setActiveImageIndex(props.nextImageIndex);
-        }
-    }
-
-    useEffect(() => {
-        window.addEventListener("keydown", keydownHandler);
-        // Remove event listeners on cleanup
-        return () => {
-            window.removeEventListener("keydown", keydownHandler);
-        };
-    }, []);
-
-    const infoBoxRef = useRef(null)
-    useEffect(() => {
-        infoBoxRef.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-    }, [image]);
-
     return (
 
-            <div css={ImageContentWrapper} ref={infoBoxRef}>
+            <div css={ImageContentWrapper} ref={ref}>
                 {arrows}
                 <div css={ImageWrapperCSS}>
                     <img css={ImageCSS} src={props.image.photoUrl}/>
@@ -57,7 +36,7 @@ const ImageInfo = props => {
                 </div>
             </div>
     );
-}
+});
 
 const ImageContentWrapper = css`
     height: 70vh;

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import React, {useEffect, useRef} from 'react'
+import React, {useCallback, useEffect, useRef} from 'react'
 import {css, jsx} from '@emotion/react'
 import {clear, updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch, useSelector} from "react-redux";
@@ -46,6 +46,37 @@ const Gallery = props => {
 
     const wrapperRef = useRef(null);
     useOutsideClose(wrapperRef);
+
+    const infoBoxRef = useRef(null);
+    const infoBoxRefWrapper = useCallback((node) => {
+        infoBoxRef.current = node;
+        if (node !== null) {
+            infoBoxRef.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+        }
+    }, []);
+
+    const setActiveImageIndex = (i) => {
+        dispatch(updateActiveImageIndex(i));
+    }
+
+    function keydownHandler({key}) {
+        if (key === "ArrowLeft") {
+            setActiveImageIndex(prevImageIndex());
+        } else if (key === "ArrowRight") {
+            setActiveImageIndex(nextImageIndex());
+        }
+    }
+
+    useEffect(() => {
+        if (activeImageIndex != null) {
+            window.addEventListener("keydown", keydownHandler);
+            // Remove event listeners on cleanup
+            return () => {
+                window.removeEventListener("keydown", keydownHandler);
+            };
+        }
+    }, [activeImageIndex]);
+
     return images.length === 0 ? null : (
         <div css={GalleryContainerCSS} className="galleryContainer">
             <CloseButton onClick={closeGallery}/>
@@ -56,7 +87,9 @@ const Gallery = props => {
                             <div css={activeImageIndex === i ? selectedImgCSS : null}>
                                 <img css={imgCSS} src={image.thumbUrl} onClick={() => setActive(i)}/>
                             </div>
-                            <div css={activeImageIndex === i ? SelectedImageInfoContainerCSS : NonSelectedImageInfoContainerCSS}>
+                            <div
+                                css={activeImageIndex === i ? SelectedImageInfoContainerCSS : NonSelectedImageInfoContainerCSS}
+                            >
                                 <CSSTransitionGroup
                                     transitionName="imageInfo"
                                     transitionEnterTimeout={300}
@@ -64,6 +97,7 @@ const Gallery = props => {
                                     transitionEnter={activeImageIndex !== null && prevActiveImageIndex === null}
                                     transitionLeave={activeImageIndex === null}>
                                     {activeImageIndex === i ? <ImageInfo
+                                        ref={infoBoxRefWrapper}
                                         key={image.title}
                                         image={image}
                                         arrowsActive={images.length > 1}
@@ -72,7 +106,6 @@ const Gallery = props => {
                                     /> : null}
                                 </CSSTransitionGroup>
                             </div>
-
                         </li>
                     ))}
                 </ul>
@@ -105,57 +138,57 @@ function useOutsideClose(ref) {
 }
 
 const GalleryContainerCSS = css`
-    position: relative;
-    height: 100vh;
-    width: 100vw;
-    margin: 0 auto;
-    overflow: auto;
-    background-color:rgba(0, 0, 0, 0.8);
-    z-index: 100;    
-`;
+                    position: relative;
+                    height: 100vh;
+                    width: 100vw;
+                    margin: 0 auto;
+                    overflow: auto;
+                    background-color:rgba(0, 0, 0, 0.8);
+                    z-index: 100;
+                    `;
 
 const ImagesContainerCSS = css`
-    margin: 50px 20px 10px 60px;
-`;
+                    margin: 50px 20px 10px 60px;
+                    `;
 
 const ulCSS = css`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 10px;
-`;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    gap: 10px;
+                    `;
 
 const imgCSS = css`
-    height: 25vh;
-    object-fit: cover;
-    vertical-align: bottom;
-    cursor: pointer;
-`;
+                    height: 25vh;
+                    object-fit: cover;
+                    vertical-align: bottom;
+                    cursor: pointer;
+                    `;
 
 const selectedImgCSS = css`
-    ::after {
-    top: auto;
-    border: solid transparent;
-    content: '';
-    pointer-events: none;
-    border-bottom-color: #fff;
-    border-width: 15px;
-    margin: -17px 0 0 0;
-    width: 0;
-    height: 0;
-    left: calc(50% - 15px);
-    position: relative;
-    display: block;
-    }
-`;
+                    ::after {
+                    top: auto;
+                    border: solid transparent;
+                    content: '';
+                    pointer-events: none;
+                    border-bottom-color: #fff;
+                    border-width: 15px;
+                    margin: -17px 0 0 0;
+                    width: 0;
+                    height: 0;
+                    left: calc(50% - 15px);
+                    position: relative;
+                    display: block;
+                }
+                    `;
 
 const SelectedImageInfoContainerCSS = css`
-    height: 70vh;
-`;
+                    height: 70vh;
+                    `;
 
 const NonSelectedImageInfoContainerCSS = css`
-    height: 0vh;
-`;
+                    height: 0vh;
+                    `;
 
 export default Gallery
