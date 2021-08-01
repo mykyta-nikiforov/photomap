@@ -1,5 +1,5 @@
 import {configureStore} from '@reduxjs/toolkit'
-import galleryReducer from './slider/gallerySlice'
+import galleryReducer from './gallery/gallerySlice'
 
 export default configureStore({
     reducer: {

@@ -56,7 +56,7 @@ const Gallery = props => {
             <div css={ImagesContainerCSS}>
                 <ul css={ulCSS} className="itemsContainer">
                     {images.map((image, i) => (
-                        <li ref={wrapperRef} className="imageItem">
+                        <li ref={wrapperRef}>
                             <div css={activeImageIndex === i ? selectedImgCSS : null}>
                                 <img css={imgCSS} src={image.thumbUrl} onClick={() => setActive(i)}/>
                             </div>

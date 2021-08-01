@@ -1,6 +1,6 @@
 import React from 'react';
 import Map from './Map';
-import Gallery from "./slider/Gallery";
+import Gallery from "./gallery/Gallery";
 import {useSelector} from "react-redux";
 
 // const images = [

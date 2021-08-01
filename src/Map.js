@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import {useDispatch} from 'react-redux';
-import {update} from './slider/gallerySlice'
+import {update} from './gallery/gallerySlice'
 import convertFeaturesToImages from "./converter/FeaturesToImagesConverter";
 
 mapboxgl.accessToken =
