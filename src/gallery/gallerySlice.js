@@ -4,7 +4,8 @@ export const gallerySlice = createSlice({
     name: 'gallery',
     initialState: {
         images: [],
-        activeImageIndex: null
+        activeImageIndex: null,
+        prevActiveImageIndex: null
     },
     reducers: {
         update: {
@@ -20,10 +21,12 @@ export const gallerySlice = createSlice({
             reducer: (state, action) => {
                 state.images = [];
                 state.activeImageIndex = null;
+                state.prevActiveImageIndex = null;
             }
         },
         updateActiveImageIndex: {
             reducer: (state, action) => {
+                state.prevActiveImageIndex = action.payload === null ? null : state.activeImageIndex;
                 state.activeImageIndex = action.payload;
             }
         }

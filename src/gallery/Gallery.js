@@ -1,10 +1,12 @@
 /** @jsx jsx */
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {css, jsx} from '@emotion/react'
 import {clear, updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch, useSelector} from "react-redux";
 import CloseButton from "./CloseButton";
 import ImageInfo from "./ImageInfo";
+import {CSSTransitionGroup} from 'react-transition-group' // ES6
+import './Gallery.css';
 
 /**
  * @function Slider
@@ -15,6 +17,7 @@ const Gallery = props => {
 
     const images = useSelector((state) => state.gallery.images);
     const activeImageIndex = useSelector((state) => state.gallery.activeImageIndex);
+    const prevActiveImageIndex = useSelector((state) => state.gallery.prevActiveImageIndex);
 
     const nextImageIndex = () => {
         if (activeImageIndex === images.length - 1) {
@@ -43,7 +46,6 @@ const Gallery = props => {
 
     const wrapperRef = useRef(null);
     useOutsideClose(wrapperRef);
-
     return images.length === 0 ? null : (
         <div css={GalleryContainerCSS} className="galleryContainer">
             <CloseButton onClick={closeGallery}/>
@@ -54,18 +56,27 @@ const Gallery = props => {
                             <div css={activeImageIndex === i ? selectedImgCSS : null}>
                                 <img css={imgCSS} src={image.thumbUrl} onClick={() => setActive(i)}/>
                             </div>
+                            <div css={activeImageIndex === i ? SelectedImageInfoContainerCSS : NonSelectedImageInfoContainerCSS}>
+                                <CSSTransitionGroup
+                                    transitionName="imageInfo"
+                                    transitionEnterTimeout={300}
+                                    transitionLeaveTimeout={300}
+                                    transitionEnter={activeImageIndex !== null && prevActiveImageIndex === null}
+                                    transitionLeave={activeImageIndex === null}>
+                                    {activeImageIndex === i ? <ImageInfo
+                                        key={image.title}
+                                        image={image}
+                                        arrowsActive={images.length > 1}
+                                        prevImageIndex={prevImageIndex()}
+                                        nextImageIndex={nextImageIndex()}
+                                    /> : null}
+                                </CSSTransitionGroup>
+                            </div>
 
-                            {activeImageIndex === i ? <ImageInfo
-                                image={image}
-                                arrowsActive={images.length > 1}
-                                prevImageIndex={prevImageIndex()}
-                                nextImageIndex={nextImageIndex()}
-                            /> : null}
                         </li>
                     ))}
                 </ul>
             </div>
-
         </div>
     );
 };
@@ -74,9 +85,6 @@ function useOutsideClose(ref) {
     const dispatch = useDispatch();
     useEffect(() => {
 
-        /**
-         * Alert if clicked on outside of element
-         */
         function handleClickOutside(event) {
             if (ref.current
                 && (typeof event.target.className === 'string'
@@ -140,6 +148,14 @@ const selectedImgCSS = css`
     position: relative;
     display: block;
     }
+`;
+
+const SelectedImageInfoContainerCSS = css`
+    height: 70vh;
+`;
+
+const NonSelectedImageInfoContainerCSS = css`
+    height: 0vh;
 `;
 
 export default Gallery

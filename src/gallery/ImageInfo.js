@@ -43,7 +43,7 @@ const ImageInfo = props => {
     }, [image]);
 
     return (
-        <div css={ImageInfoContainerCSS}>
+
             <div css={ImageContentWrapper} ref={infoBoxRef}>
                 {arrows}
                 <div css={ImageWrapperCSS}>
@@ -56,14 +56,8 @@ const ImageInfo = props => {
                     <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
                 </div>
             </div>
-        </div>
     );
 }
-
-
-const ImageInfoContainerCSS = css`
-    height: 70vh;
-`;
 
 const ImageContentWrapper = css`
     height: 70vh;
