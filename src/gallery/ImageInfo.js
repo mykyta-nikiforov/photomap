@@ -5,8 +5,8 @@ import Arrow from "./Arrow";
 import {updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch} from "react-redux";
 import {SpinnerDiamond} from 'spinners-react';
-import {CSSTransitionGroup} from 'react-transition-group' // ES6
 import './ImageInfo.css';
+import FadeIn from "react-lazyload-fadein";
 
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
@@ -40,18 +40,17 @@ const ImageInfo = forwardRef((props, ref) => {
                         enabled={!isImageLoaded}/>
                 </div>
                 <div>
-                    <CSSTransitionGroup
-                        transitionName="imageInfoImg"
-                        transitionAppear
-                        transitionAppearTimeout={500}
-                        transitionEnter
-                        transitionEnterTimeout={500}
-                    >
+                    <FadeIn height={200} duration={50}>
+                        {onload => (
                         <img
                             css={ImageCSS}
                             src={props.image.photoUrl}
-                            onLoad={() => setIsImageLoaded(true)}/>
-                    </CSSTransitionGroup>
+                            onLoad={() => {
+                                setIsImageLoaded(true);
+                                onload();
+                            }}/>
+                            )}
+                    </FadeIn>
                 </div>
             </div>
             <div css={ImageDataWrapper}>
