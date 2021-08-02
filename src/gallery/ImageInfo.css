@@ -1,0 +1,17 @@
+.imageInfoImg-appear {
+    opacity: 0.01;
+}
+
+.imageInfoImg-appear.imageInfoImg-appear-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.imageInfoImg-enter {
+    opacity: 0.01;
+}
+
+.imageInfoImg-enter.imageInfoImg-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}

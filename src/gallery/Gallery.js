@@ -13,8 +13,6 @@ import './Gallery.css';
  */
 
 const Gallery = props => {
-    const dispatch = useDispatch();
-
     const images = useSelector((state) => state.gallery.images);
     const activeImageIndex = useSelector((state) => state.gallery.activeImageIndex);
     const prevActiveImageIndex = useSelector((state) => state.gallery.prevActiveImageIndex);
@@ -35,18 +33,27 @@ const Gallery = props => {
         }
     };
 
+    // Dispatchers
+    const dispatch = useDispatch();
+
     const closeGallery = () => {
         dispatch(clear());
     }
 
     const setActive = (i) => {
         const value = activeImageIndex === i ? null : i;
-        dispatch(updateActiveImageIndex(value));
+        setActiveImageIndex(value);
     };
 
+    const setActiveImageIndex = (i) => {
+        dispatch(updateActiveImageIndex(i));
+    }
+
+    // Close on outside click
     const wrapperRef = useRef(null);
     useOutsideClose(wrapperRef);
 
+    // Scroll to opened imageInfo
     const infoBoxRef = useRef(null);
     const infoBoxRefWrapper = useCallback((node) => {
         infoBoxRef.current = node;
@@ -55,10 +62,7 @@ const Gallery = props => {
         }
     }, []);
 
-    const setActiveImageIndex = (i) => {
-        dispatch(updateActiveImageIndex(i));
-    }
-
+    // Keydown handler: left/right
     function keydownHandler({key}) {
         if (key === "ArrowLeft") {
             setActiveImageIndex(prevImageIndex());

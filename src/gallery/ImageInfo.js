@@ -1,17 +1,22 @@
 /** @jsx jsx */
-import React, {forwardRef, useEffect, useRef} from 'react'
+import React, {forwardRef, useState} from 'react'
 import {css, jsx} from '@emotion/react'
 import Arrow from "./Arrow";
 import {updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch} from "react-redux";
+import {SpinnerDiamond} from 'spinners-react';
+import {CSSTransitionGroup} from 'react-transition-group' // ES6
+import './ImageInfo.css';
 
 const ImageInfo = forwardRef((props, ref) => {
+    const image = props.image;
     const dispatch = useDispatch();
 
     const setActiveImageIndex = (i) => {
         dispatch(updateActiveImageIndex(i));
     }
 
+    // Arrows
     let arrows = null;
     if (props.arrowsActive) {
         arrows = <div>
@@ -19,22 +24,43 @@ const ImageInfo = forwardRef((props, ref) => {
             <Arrow direction="right" handleClick={() => setActiveImageIndex(props.nextImageIndex)}/>
         </div>;
     }
-    const image = props.image;
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     return (
 
-            <div css={ImageContentWrapper} ref={ref}>
-                {arrows}
-                <div css={ImageWrapperCSS}>
-                    <img css={ImageCSS} src={props.image.photoUrl}/>
+        <div css={ImageContentWrapper}
+             ref={ref}>
+            {arrows}
+            <div css={ImageWrapperCSS}>
+                <div style={{display: isImageLoaded ? "none" : "inline",
+                    position: "absolute",
+                    top: "50%"}}>
+                    <SpinnerDiamond
+                        color={"#424852"}
+                        enabled={!isImageLoaded}/>
                 </div>
-                <div css={ImageDataWrapper}>
-                    <div css={DescriptionCSS} dangerouslySetInnerHTML={{__html: image.description}}/>
-                    <p><i>Час створення:</i> <span dangerouslySetInnerHTML={{__html: image.dateTimeOriginal}}/></p>
-                    <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>
-                    <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
+                <div>
+                    <CSSTransitionGroup
+                        transitionName="imageInfoImg"
+                        transitionAppear
+                        transitionAppearTimeout={500}
+                        transitionEnter
+                        transitionEnterTimeout={500}
+                    >
+                        <img
+                            css={ImageCSS}
+                            src={props.image.photoUrl}
+                            onLoad={() => setIsImageLoaded(true)}/>
+                    </CSSTransitionGroup>
                 </div>
             </div>
+            <div css={ImageDataWrapper}>
+                <div css={DescriptionCSS} dangerouslySetInnerHTML={{__html: image.description}}/>
+                <p><i>Час створення:</i> <span dangerouslySetInnerHTML={{__html: image.dateTimeOriginal}}/></p>
+                <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>
+                <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
+            </div>
+        </div>
     );
 });
 
