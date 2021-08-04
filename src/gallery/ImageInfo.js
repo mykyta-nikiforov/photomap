@@ -6,7 +6,7 @@ import {updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch} from "react-redux";
 import {SpinnerDiamond} from 'spinners-react';
 import './ImageInfo.css';
-import FadeIn from "react-lazyload-fadein";
+import FadeIn from "react-fade-in";
 
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
@@ -25,7 +25,6 @@ const ImageInfo = forwardRef((props, ref) => {
         </div>;
     }
     const [isImageLoaded, setIsImageLoaded] = useState(false);
-
     return (
 
         <div css={ImageContentWrapper}
@@ -40,16 +39,13 @@ const ImageInfo = forwardRef((props, ref) => {
                         enabled={!isImageLoaded}/>
                 </div>
                 <div>
-                    <FadeIn height={200} duration={50}>
-                        {onload => (
+                    <FadeIn delay={50}>
                         <img
                             css={ImageCSS}
                             src={props.image.photoUrl}
                             onLoad={() => {
                                 setIsImageLoaded(true);
-                                onload();
                             }}/>
-                            )}
                     </FadeIn>
                 </div>
             </div>
