@@ -54,11 +54,17 @@ const Gallery = props => {
     useOutsideClose(wrapperRef);
 
     // Scroll to opened imageInfo
-    const infoBoxRef = useRef(null);
-    const infoBoxRefWrapper = useCallback((node) => {
-        infoBoxRef.current = node;
+    const infoBoxRef = useCallback((node) => {
+        let timer;
         if (node !== null) {
-            infoBoxRef.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+            timer = setTimeout(() => {
+                node.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+            }, 0);
+        }
+        return () => {
+            if (timer) {
+                clearTimeout(timer);
+            }
         }
     }, []);
 
@@ -101,7 +107,7 @@ const Gallery = props => {
                                     transitionEnter={activeImageIndex !== null && prevActiveImageIndex === null}
                                     transitionLeave={activeImageIndex === null}>
                                     {activeImageIndex === i ? <ImageInfo
-                                        ref={infoBoxRefWrapper}
+                                        ref={infoBoxRef}
                                         key={image.title}
                                         image={image}
                                         arrowsActive={images.length > 1}
