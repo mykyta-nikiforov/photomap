@@ -58,16 +58,17 @@ const Gallery = props => {
     const infoBoxRef = useCallback((node) => {
         let timer;
         if (node !== null) {
+            let timeoutTime = prevActiveImageIndex === null ? 200 : 0;
             timer = setTimeout(() => {
                 node.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-            }, 0);
+            }, timeoutTime);
         }
         return () => {
             if (timer) {
                 clearTimeout(timer);
             }
         }
-    }, []);
+    }, [prevActiveImageIndex]);
 
     // Keydown handler: left/right
     function keydownHandler({key}) {
@@ -106,8 +107,8 @@ const Gallery = props => {
                             >
                                 <CSSTransitionGroup
                                     transitionName="imageInfo"
-                                    transitionEnterTimeout={300}
-                                    transitionLeaveTimeout={300}
+                                    transitionEnterTimeout={200}
+                                    transitionLeaveTimeout={200}
                                     transitionEnter={activeImageIndex !== null && prevActiveImageIndex === null}
                                     transitionLeave={activeImageIndex === null}>
                                     {activeImageIndex === i ? <ImageInfo

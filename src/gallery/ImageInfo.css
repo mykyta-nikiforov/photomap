@@ -4,7 +4,7 @@
 
 .imageInfoImg-appear.imageInfoImg-appear-active {
     opacity: 1;
-    transition: opacity 500ms ease-in;
+    transition: opacity 200ms ease-in;
 }
 
 .imageInfoImg-enter {
@@ -13,5 +13,5 @@
 
 .imageInfoImg-enter.imageInfoImg-enter-active {
     opacity: 1;
-    transition: opacity 500ms ease-in;
+    transition: opacity 200ms ease-in;
 }
