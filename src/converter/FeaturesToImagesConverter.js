@@ -9,7 +9,9 @@ function convertFeaturesToImages(features) {
             fullUrl: feature.properties.fullUrl,
             description: feature.properties.description,
             author: feature.properties.author,
-            dateTimeOriginal: feature.properties.dateTimeOriginal
+            dateTimeOriginal: feature.properties.dateTimeOriginal,
+            width: feature.properties.width,
+            height: feature.properties.height
         }
     });
 }

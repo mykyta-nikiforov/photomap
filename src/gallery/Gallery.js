@@ -7,6 +7,7 @@ import CloseButton from "./CloseButton";
 import ImageInfo from "./ImageInfo";
 import {CSSTransitionGroup} from 'react-transition-group' // ES6
 import './Gallery.css';
+import ImageThumbnail from "./ImageThumbnail";
 
 /**
  * @function Slider
@@ -95,7 +96,10 @@ const Gallery = props => {
                     {images.map((image, i) => (
                         <li ref={wrapperRef}>
                             <div css={activeImageIndex === i ? selectedImgCSS : null}>
-                                <img css={imgCSS} src={image.thumbUrl} onClick={() => setActive(i)}/>
+                                <ImageThumbnail
+                                    image={image}
+                                    onClick={() => setActive(i)}
+                                />
                             </div>
                             <div
                                 css={activeImageIndex === i ? SelectedImageInfoContainerCSS : NonSelectedImageInfoContainerCSS}
@@ -167,13 +171,6 @@ const ulCSS = css`
                     justify-content: flex-start;
                     align-items: flex-start;
                     gap: 10px;
-                    `;
-
-const imgCSS = css`
-                    height: 25vh;
-                    object-fit: cover;
-                    vertical-align: bottom;
-                    cursor: pointer;
                     `;
 
 const selectedImgCSS = css`
