@@ -25,34 +25,33 @@ const ImageInfo = forwardRef((props, ref) => {
         </div>;
     }
     const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const imageStyle = !isImageLoaded ? {display: "none"} : {};
+
     return (
 
         <div css={ImageContentWrapper}
              ref={ref}>
             {arrows}
             <div css={ImageWrapperCSS}>
-                <div style={{display: isImageLoaded ? "none" : "inline",
-                    position: "absolute",
-                    top: "50%"}}>
+                {!isImageLoaded && <div>
                     <SpinnerDiamond
                         color={"#424852"}
-                        enabled={!isImageLoaded}/>
-                </div>
-                <div>
+                    />
+                </div>}
                     <FadeIn delay={50}>
                         <img
+                            style={imageStyle}
                             css={ImageCSS}
                             src={props.image.photoUrl}
                             onLoad={() => {
                                 setIsImageLoaded(true);
                             }}/>
                     </FadeIn>
-                </div>
             </div>
             <div css={ImageDataWrapper}>
                 <div css={DescriptionCSS} dangerouslySetInnerHTML={{__html: image.description}}/>
                 <p><i>Час створення:</i> <span dangerouslySetInnerHTML={{__html: image.dateTimeOriginal}}/></p>
-                <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>
+                {image.author !== 'невідомий' && <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>}
                 <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
             </div>
         </div>
@@ -75,7 +74,9 @@ const ImageContentWrapper = css`
 const ImageWrapperCSS = css`
 width: 60%;
 padding: 4vh 10vh;
-text-align: center;
+display: flex;
+align-items: center;
+justify-content: center;
 `;
 
 const ImageCSS = css`

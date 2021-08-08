@@ -26,11 +26,11 @@ const ImageThumbnail = props => {
     };
 
     return (<div style={imageContainerStyle}>
-        {!loaded && <div>
+        {!loaded &&
             <SpinnerDiamond
                 color={"#424852"}
             />
-        </div>}
+        }
 
         <img
             css={imgCSS}
