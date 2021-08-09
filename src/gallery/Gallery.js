@@ -58,7 +58,7 @@ const Gallery = props => {
     const infoBoxRef = useCallback((node) => {
         let timer;
         if (node !== null) {
-            let timeoutTime = prevActiveImageIndex === null ? 200 : 0;
+            let timeoutTime = prevActiveImageIndex === null ? 250 : 0;
             timer = setTimeout(() => {
                 node.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
             }, timeoutTime);
