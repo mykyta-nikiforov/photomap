@@ -4,9 +4,13 @@ import {css, jsx} from '@emotion/react';
 import {SpinnerDiamond} from 'spinners-react';
 import useWindowDimensions from "../util/useWindowDimensions";
 import {ReactComponent as ColorIcon} from "../img/chromatic.svg";
+import {useSelector} from "react-redux";
 
 const ImageThumbnail = props => {
     const image = props.image;
+
+    const isDisplayColorized = useSelector((state) => state.gallery.isDisplayColorized);
+    const thumbUrl = isDisplayColorized && image.colorized ? image.colorized.thumbUrl : image.thumbUrl ;
 
     // Loaded state
     const [loaded, setLoaded] = useState(false);
@@ -37,7 +41,7 @@ const ImageThumbnail = props => {
         <img
             css={imgCSS}
             style={imageStyle}
-            src={image.thumbUrl}
+            src={thumbUrl}
             onClick={props.onClick}
             onLoad={() => setLoaded(true)}
         />

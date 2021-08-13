@@ -5,7 +5,8 @@ export const gallerySlice = createSlice({
     initialState: {
         images: [],
         activeImageIndex: null,
-        prevActiveImageIndex: null
+        prevActiveImageIndex: null,
+        isDisplayColorized: false
     },
     reducers: {
         update: {
@@ -29,9 +30,14 @@ export const gallerySlice = createSlice({
                 state.prevActiveImageIndex = action.payload === null ? null : state.activeImageIndex;
                 state.activeImageIndex = action.payload;
             }
+        },
+        updateColorized: {
+            reducer: (state, action) => {
+                state.isDisplayColorized = action.payload;
+            }
         }
     },
 })
 // Action creators are generated for each case reducer function
-export const {update, clear, updateActiveImageIndex} = gallerySlice.actions
+export const {update, clear, updateActiveImageIndex, updateColorized} = gallerySlice.actions
 export default gallerySlice.reducer

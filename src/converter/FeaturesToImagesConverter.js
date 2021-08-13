@@ -15,14 +15,17 @@ function convertFeaturesToImages(features) {
             height: feature.properties.height,
             colorized: feature.properties.colorized == null ? null : {
                 photoUrl: feature.properties.colorized.photoUrl,
-                thumbUrl: feature.properties.colorized.thumbUrl
+                thumbUrl: feature.properties.colorized.thumbUrl,
+                // thumbUrl: getThumbnailUrl(feature.properties.fullUrl),
+
             }
         }
     });
 }
 
 // function getThumbnailUrl(fullUrl) {
-//     let fileName = fullUrl.replace('https://wikibilhorod.info/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:', '');
+//     let fileName = fullUrl.replace('https://wikibilhorod.info/wiki/Файл:', '');
+//     // fileName = fileName.replace('.jpg', ' (колір).jpg');
 //     return `https://wikibilhorod.info/thumb.php?f=${fileName}&width=300`;
 // }
 

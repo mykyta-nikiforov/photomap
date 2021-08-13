@@ -2,8 +2,8 @@
 import React, {forwardRef, useState} from 'react'
 import {css, jsx} from '@emotion/react'
 import Arrow from "./Arrow";
-import {updateActiveImageIndex} from "./gallerySlice";
-import {useDispatch} from "react-redux";
+import {updateActiveImageIndex, updateColorized} from "./gallerySlice";
+import {useDispatch, useSelector} from "react-redux";
 import {SpinnerDiamond} from 'spinners-react';
 import './ImageInfo.css';
 import FadeIn from "react-fade-in";
@@ -12,9 +12,14 @@ import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
     const dispatch = useDispatch();
+    const isDisplayColorized = useSelector((state) => state.gallery.isDisplayColorized);
 
     const setActiveImageIndex = (i) => {
         dispatch(updateActiveImageIndex(i));
+    };
+
+    const setIsDisplayedColorized = (i) => {
+        dispatch(updateColorized(i));
     }
 
     // Arrows
@@ -28,8 +33,7 @@ const ImageInfo = forwardRef((props, ref) => {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
     const imageStyle = !isImageLoaded ? {display: "none"} : {};
 
-    const [isDisplayedColorized, setIsDisplayedColorized] = useState(false);
-    const imageSrc = !isDisplayedColorized ? image.photoUrl : image.colorized.photoUrl;
+    const imageSrc = isDisplayColorized && image.colorized ? image.colorized.photoUrl : image.photoUrl;
 
     return (
 
@@ -53,7 +57,7 @@ const ImageInfo = forwardRef((props, ref) => {
                 </FadeIn>
                 {image.colorized && <div css={ToolsWrapper}>
                     <ColorIcon css={ColorIconCss}
-                        onClick={() => setIsDisplayedColorized(!isDisplayedColorized)}
+                        onClick={() => setIsDisplayedColorized(!isDisplayColorized)}
                     />
                 </div>}
             </div>
