@@ -25,11 +25,18 @@ const Map = () => {
     // Initialize map when component mounts
     useEffect(() => {
         if (map.current) return;
+        const bounds = [
+            [29.1220, 45.6851], // Southwest coordinates
+            [31.2959, 46.5145] // Northeast coordinates
+        ];
+
+
         map.current = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: 'mapbox://styles/nikiforovpizza/ckr165cpu7egu18m46f8qg4tq',
             center: [lng, lat],
-            zoom: zoom
+            zoom: zoom,
+            maxBounds: bounds
         });
         // Add navigation control (the +/- zoom buttons)
         addControlPanel();
