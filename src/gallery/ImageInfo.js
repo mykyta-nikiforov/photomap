@@ -78,6 +78,7 @@ const ImageContentWrapper = css`
     overflow-y: scroll;
     margin: 0px 10px 10px 60px; 
     overflow-x: hidden;
+    z-index: 200;
 `;
 
 const ImageWrapperCSS = css`

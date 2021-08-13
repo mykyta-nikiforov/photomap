@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import React, {useState} from 'react';
-import {jsx} from '@emotion/react';
+import {css, jsx} from '@emotion/react';
 import {SpinnerDiamond} from 'spinners-react';
 import useWindowDimensions from "../util/useWindowDimensions";
+import {ReactComponent as ColorIcon} from "../img/chromatic.svg";
 
 const ImageThumbnail = props => {
     const image = props.image;
@@ -22,7 +23,8 @@ const ImageThumbnail = props => {
         height: heightInPixels,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        position: 'relative'
     };
 
     return (<div style={imageContainerStyle}>
@@ -39,6 +41,11 @@ const ImageThumbnail = props => {
             onClick={props.onClick}
             onLoad={() => setLoaded(true)}
         />
+        {loaded && image.colorized && <div css={ToolsWrapper}>
+            <ColorIcon css={ColorIconCss}
+
+            />
+        </div>}
     </div>)
 }
 
@@ -50,5 +57,18 @@ export const imgCSS = {
     'vertical-align': 'bottom',
     'cursor': 'pointer'
 };
+
+const ToolsWrapper = css`
+    height: 20px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+`;
+
+const ColorIconCss = css`
+    width: 18px;
+    height: 18px;
+    opacity: 75%;
+`;
 
 export default ImageThumbnail

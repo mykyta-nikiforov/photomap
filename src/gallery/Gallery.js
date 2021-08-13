@@ -193,10 +193,12 @@ const selectedImgCSS = css`
 
 const SelectedImageInfoContainerCSS = css`
                     height: 70vh;
+                    z-index: 100;
                     `;
 
 const NonSelectedImageInfoContainerCSS = css`
                     height: 0vh;
+                    z-index: 100;
                     `;
 
 export default Gallery
