@@ -10,6 +10,7 @@ function convertFeaturesToImages(features) {
             description: feature.properties.description,
             author: feature.properties.author,
             dateTimeOriginal: feature.properties.dateTimeOriginal,
+            years: feature.properties.years,
             width: feature.properties.width,
             height: feature.properties.height
         }
