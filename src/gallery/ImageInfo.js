@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import {SpinnerDiamond} from 'spinners-react';
 import './ImageInfo.css';
 import FadeIn from "react-fade-in";
+import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
 
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
@@ -27,6 +28,9 @@ const ImageInfo = forwardRef((props, ref) => {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
     const imageStyle = !isImageLoaded ? {display: "none"} : {};
 
+    const [isDisplayedColorized, setIsDisplayedColorized] = useState(false);
+    const imageSrc = !isDisplayedColorized ? image.photoUrl : image.colorized.photoUrl;
+
     return (
 
         <div css={ImageContentWrapper}
@@ -38,20 +42,25 @@ const ImageInfo = forwardRef((props, ref) => {
                         color={"#424852"}
                     />
                 </div>}
-                    <FadeIn delay={50}>
-                        <img
-                            style={imageStyle}
-                            css={ImageCSS}
-                            src={props.image.photoUrl}
-                            onLoad={() => {
-                                setIsImageLoaded(true);
-                            }}/>
-                    </FadeIn>
+                <FadeIn delay={50}>
+                    <img
+                        style={imageStyle}
+                        css={ImageCSS}
+                        src={imageSrc}
+                        onLoad={() => {
+                            setIsImageLoaded(true);
+                        }}/>
+                </FadeIn>
+                {image.colorized && <div css={ToolsWrapper}>
+                    <ColorIcon css={ColorIconCss}
+                        onClick={() => setIsDisplayedColorized(!isDisplayedColorized)}
+                    />
+                </div>}
             </div>
             <div css={ImageDataWrapper}>
                 <div css={DescriptionCSS} dangerouslySetInnerHTML={{__html: image.description}}/>
                 <p><i>Час створення:</i> <span dangerouslySetInnerHTML={{__html: image.dateTimeOriginal}}/></p>
-                {image.author !== 'невідомий' && <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>}
+                {image.author && <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>}
                 <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
             </div>
         </div>
@@ -77,11 +86,25 @@ padding: 4vh 10vh;
 display: flex;
 align-items: center;
 justify-content: center;
+position: relative;
 `;
 
 const ImageCSS = css`
     max-width: 100%;
     max-height: 65vh;
+`;
+
+const ToolsWrapper = css`
+    height: 20px;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+`;
+
+const ColorIconCss = css`
+    width: 20px;
+    height: 20px;
+    cursor: pointer;  
 `;
 
 const ImageDataWrapper = css`
