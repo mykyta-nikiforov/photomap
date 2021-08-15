@@ -10,6 +10,7 @@ import FadeIn from "react-fade-in";
 import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
 import {ReactComponent as BeforeAfter} from '../img/before-after.svg'
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
+import useWindowDimensions from "../util/useWindowDimensions";
 
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
@@ -61,8 +62,13 @@ const ImageInfo = forwardRef((props, ref) => {
             setIsDisplayColorizedLocalUpdated(false);
         }, [isDisplayColorized]);
 
-    return (
+    // Image sizes
+    const {windowHeight} = useWindowDimensions();
+    const heightInPixels = windowHeight * imageHeightInVh / 100;
+    const ratio = heightInPixels / image.height;
+    const widthInPixels = image.width * ratio;
 
+    return (
         <div css={ImageContentWrapper}
              ref={ref}>
             {arrows}
@@ -83,14 +89,16 @@ const ImageInfo = forwardRef((props, ref) => {
                         :
                         <div>
                             <ReactCompareSlider
-                                style={{maxHeight: image.height, maxWidth: image.width}}
+                                style={{maxHeight: heightInPixels, maxWidth: widthInPixels}}
                                 itemOne={<ReactCompareSliderImage src={imageSrc} alt="Оригінальне фото" />}
                                 itemTwo={<ReactCompareSliderImage src={image.replicaPhotoUrl} alt="Сучасна репліка" />}
                             />
                         </div>
                     }
-
                 </FadeIn>
+                {/* Preload images */}
+                {image.colorized && <img src={image.colorized.photoUrl} style={{display: 'none'}}/>}
+                {image.replicaPhotoUrl && <img src={image.replicaPhotoUrl} style={{display: 'none'}}/>}
                 {(image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
                     {image.colorized && <ColorIcon title='Кольоризоване фото' css={ToolboxIconCss}
                                onClick={updateImageSrc}
@@ -163,5 +171,8 @@ const DescriptionCSS = css`
     font-size: 20px;
     margin-bottom: 4vh;
 `;
+
+const imageHeightInVh = '62';
+
 
 export default ImageInfo
