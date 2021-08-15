@@ -3,12 +3,12 @@
 }
 
 .imageInfo-enter.imageInfo-enter-active {
-    max-height: 70vh;
+    max-height: 66vh;
     transition: max-height 300ms;
 }
 
 .imageInfo-leave {
-    max-height: 70vh;
+    max-height: 66vh;
 }
 
 .imageInfo-leave.imageInfo-leave-active {

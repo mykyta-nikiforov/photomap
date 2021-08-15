@@ -13,9 +13,9 @@ function convertFeaturesToImages(features) {
             years: feature.properties.years,
             width: feature.properties.width,
             height: feature.properties.height,
-            colorized: feature.properties.colorized == null ? null : {
-                photoUrl: feature.properties.colorized.photoUrl,
-                thumbUrl: feature.properties.colorized.thumbUrl,
+            colorized: feature.properties.colorizedPhotoUrl == null ? null : {
+                photoUrl: feature.properties.colorizedPhotoUrl,
+                thumbUrl: feature.properties.colorizedThumbUrl,
                 // thumbUrl: getThumbnailUrl(feature.properties.fullUrl),
 
             }

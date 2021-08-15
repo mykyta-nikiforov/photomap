@@ -1,8 +1,8 @@
 /** @jsx jsx */
-import React, {forwardRef, useState} from 'react'
+import React, {forwardRef, useEffect, useState} from 'react'
 import {css, jsx} from '@emotion/react'
 import Arrow from "./Arrow";
-import {updateActiveImageIndex, updateColorized} from "./gallerySlice";
+import {updateActiveImageIndex} from "./gallerySlice";
 import {useDispatch, useSelector} from "react-redux";
 import {SpinnerDiamond} from 'spinners-react';
 import './ImageInfo.css';
@@ -12,15 +12,10 @@ import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
     const dispatch = useDispatch();
-    const isDisplayColorized = useSelector((state) => state.gallery.isDisplayColorized);
 
     const setActiveImageIndex = (i) => {
         dispatch(updateActiveImageIndex(i));
     };
-
-    const setIsDisplayedColorized = (i) => {
-        dispatch(updateColorized(i));
-    }
 
     // Arrows
     let arrows = null;
@@ -33,7 +28,30 @@ const ImageInfo = forwardRef((props, ref) => {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
     const imageStyle = !isImageLoaded ? {display: "none"} : {};
 
-    const imageSrc = isDisplayColorized && image.colorized ? image.colorized.photoUrl : image.photoUrl;
+    // Handle colorized or original
+    const isDisplayColorized = useSelector((state) => state.gallery.isDisplayColorized);
+    const [isDisplayColorizedLocal, setIsDisplayColorizedLocal] = useState(isDisplayColorized);
+    const [isDisplayColorizedLocalUpdated, setIsDisplayColorizedLocalUpdated] = useState(false);
+    let imageSrc = image.photoUrl;
+    if (image.colorized) {
+        if (isDisplayColorizedLocal && isDisplayColorizedLocalUpdated) {
+            imageSrc = image.colorized.photoUrl;
+        } else if (!isDisplayColorizedLocal && isDisplayColorizedLocalUpdated) {
+            imageSrc = image.photoUrl;
+        } else if (isDisplayColorized) {
+            imageSrc = image.colorized.photoUrl;
+        }
+    }
+
+    const updateImageSrc = () => {
+        setIsDisplayColorizedLocal(!isDisplayColorizedLocal);
+        setIsDisplayColorizedLocalUpdated(true);
+    };
+
+    useEffect(() => {
+            setIsDisplayColorizedLocal(isDisplayColorized);
+            setIsDisplayColorizedLocalUpdated(false);
+        }, [isDisplayColorized]);
 
     return (
 
@@ -56,8 +74,8 @@ const ImageInfo = forwardRef((props, ref) => {
                         }}/>
                 </FadeIn>
                 {image.colorized && <div css={ToolsWrapper}>
-                    <ColorIcon css={ColorIconCss}
-                        onClick={() => setIsDisplayedColorized(!isDisplayColorized)}
+                    <ColorIcon title='Кольоризоване фото' css={ColorIconCss}
+                               onClick={updateImageSrc}
                     />
                 </div>}
             </div>
@@ -72,7 +90,7 @@ const ImageInfo = forwardRef((props, ref) => {
 });
 
 const ImageContentWrapper = css`
-    height: 70vh;
+    height: 66vh;
     width: calc(100% - 60px);
     position: absolute;
     left: 0;
@@ -96,7 +114,7 @@ position: relative;
 
 const ImageCSS = css`
     max-width: 100%;
-    max-height: 65vh;
+    max-height: 62vh;
 `;
 
 const ToolsWrapper = css`

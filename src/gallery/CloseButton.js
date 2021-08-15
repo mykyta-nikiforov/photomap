@@ -14,19 +14,17 @@ const CloseButton = (props) => {
 
 const ButtonCSS = css`
     position: fixed;
-    top: 10px;
+    top: 5px;
     right: 15px;
-    z-index: 200;
+    z-index: 500;
     opacity: 0.9;
-    img:hover {
-        color: #505050;
-    }
 `;
 
 const IconSvgCSS = css`
+    fill: #404040;
     width: 35px;
     &:hover {
-    fill: #505050
+    fill: #000000
     }
 `;
 

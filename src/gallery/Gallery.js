@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import React, {useCallback, useEffect, useRef} from 'react'
 import {css, jsx} from '@emotion/react'
-import {clear, updateActiveImageIndex} from "./gallerySlice";
+import {clear, updateActiveImageIndex, updateColorized} from "./gallerySlice";
 import {useDispatch, useSelector} from "react-redux";
 import CloseButton from "./CloseButton";
 import ImageInfo from "./ImageInfo";
 import {CSSTransitionGroup} from 'react-transition-group' // ES6
 import './Gallery.css';
 import ImageThumbnail from "./ImageThumbnail";
+import Toggle from 'react-toggle'
 
 /**
  * @function Slider
@@ -79,6 +80,12 @@ const Gallery = props => {
         }
     }
 
+    const isDisplayColorized = useSelector((state) => state.gallery.isDisplayColorized);
+
+    function handleColorizedToggle() {
+        dispatch(updateColorized(!isDisplayColorized));
+    }
+
     useEffect(() => {
         if (activeImageIndex != null) {
             window.addEventListener("keydown", keydownHandler);
@@ -91,6 +98,17 @@ const Gallery = props => {
 
     return images.length === 0 ? null : (
         <div css={GalleryContainerCSS} className="galleryContainer">
+            <div css={GalleryTopPanel}>
+                <div css={LeftPanelToolbox}>
+                    <label css={labelCss}>
+                        <Toggle
+                            defaultChecked={isDisplayColorized}
+                            icons={false}
+                            onChange={handleColorizedToggle} />
+                        <span style={{marginLeft: '3px'}}>Кольоризовані фото</span>
+                    </label>
+                </div>
+            </div>
             <CloseButton onClick={closeGallery}/>
             <div css={ImagesContainerCSS}>
                 <ul css={ulCSS} className="itemsContainer">
@@ -162,8 +180,28 @@ const GalleryContainerCSS = css`
                     z-index: 100;
                     `;
 
+const GalleryTopPanel = css`
+    width: 100%;
+    height: 45px;
+    background-color:white;
+    position: fixed;
+    z-index: 500;
+`;
+
+const LeftPanelToolbox = css`
+    margin-top: 8px;    
+    margin-left: 60px;
+`;
+
+const labelCss = css`
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+    width: 210px;
+`;
+
 const ImagesContainerCSS = css`
-                    margin: 50px 20px 10px 60px;
+                    margin: 53px 20px 10px 60px;
                     `;
 
 const ulCSS = css`
@@ -192,7 +230,7 @@ const selectedImgCSS = css`
                     `;
 
 const SelectedImageInfoContainerCSS = css`
-                    height: 70vh;
+                    height: 66vh;
                     z-index: 100;
                     `;
 
