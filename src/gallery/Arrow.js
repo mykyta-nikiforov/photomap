@@ -20,6 +20,7 @@ const Arrow = ({ direction, handleClick }) => (
       cursor: pointer;
       align-items: center;
       transition: transform ease-in 0.1s;
+      z-index: 300;
       &:hover {
         transform: scale(1.1);
       }
