@@ -4,6 +4,7 @@ import {css, jsx} from '@emotion/react';
 import {SpinnerDiamond} from 'spinners-react';
 import useWindowDimensions from "../util/useWindowDimensions";
 import {ReactComponent as ColorIcon} from "../img/chromatic.svg";
+import {ReactComponent as BeforeAfter} from '../img/before-after.svg'
 import {useSelector} from "react-redux";
 
 const ImageThumbnail = props => {
@@ -45,10 +46,9 @@ const ImageThumbnail = props => {
             onClick={props.onClick}
             onLoad={() => setLoaded(true)}
         />
-        {loaded && image.colorized && <div css={ToolsWrapper}>
-            <ColorIcon css={ColorIconCss}
-
-            />
+        {loaded && (image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
+            {image.colorized && <ColorIcon title='Кольоризоване фото' css={IconCss}/>}
+            {image.replicaPhotoUrl && <BeforeAfter title='Доступне фотопорівняння' css={IconCss}/>}
         </div>}
     </div>)
 }
@@ -63,16 +63,22 @@ export const imgCSS = {
 };
 
 const ToolsWrapper = css`
-    height: 20px;
+    height: 23px;
     position: absolute;
-    top: 5px;
+    bottom: 5px;
     right: 5px;
+    background: rgba(255, 255, 255, .7);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
-const ColorIconCss = css`
+const IconCss = css`
     width: 18px;
     height: 18px;
     opacity: 75%;
+    margin: 0 2px;
 `;
 
 export default ImageThumbnail

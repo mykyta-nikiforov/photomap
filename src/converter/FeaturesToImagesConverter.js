@@ -17,8 +17,8 @@ function convertFeaturesToImages(features) {
                 photoUrl: feature.properties.colorizedPhotoUrl,
                 thumbUrl: feature.properties.colorizedThumbUrl,
                 // thumbUrl: getThumbnailUrl(feature.properties.fullUrl),
-
-            }
+            },
+            replicaPhotoUrl: feature.properties.replicaPhotoUrl
         }
     });
 }

@@ -8,6 +8,8 @@ import {SpinnerDiamond} from 'spinners-react';
 import './ImageInfo.css';
 import FadeIn from "react-fade-in";
 import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
+import {ReactComponent as BeforeAfter} from '../img/before-after.svg'
+import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
@@ -48,6 +50,12 @@ const ImageInfo = forwardRef((props, ref) => {
         setIsDisplayColorizedLocalUpdated(true);
     };
 
+    // Handle comparator
+    const [isDisplayComparator, setIsDisplayComparator] = useState(false);
+    const handleImageCompare = () => {
+        setIsDisplayComparator(!isDisplayComparator);
+    };
+
     useEffect(() => {
             setIsDisplayColorizedLocal(isDisplayColorized);
             setIsDisplayColorizedLocalUpdated(false);
@@ -65,18 +73,32 @@ const ImageInfo = forwardRef((props, ref) => {
                     />
                 </div>}
                 <FadeIn delay={50}>
-                    <img
+                    {!isDisplayComparator ? <img
                         style={imageStyle}
                         css={ImageCSS}
                         src={imageSrc}
                         onLoad={() => {
                             setIsImageLoaded(true);
                         }}/>
+                        :
+                        <div>
+                            <ReactCompareSlider
+                                style={{maxHeight: image.height, maxWidth: image.width}}
+                                itemOne={<ReactCompareSliderImage src={imageSrc} alt="Оригінальне фото" />}
+                                itemTwo={<ReactCompareSliderImage src={image.replicaPhotoUrl} alt="Сучасна репліка" />}
+                            />
+                        </div>
+                    }
+
                 </FadeIn>
-                {image.colorized && <div css={ToolsWrapper}>
-                    <ColorIcon title='Кольоризоване фото' css={ColorIconCss}
+                {(image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
+                    {image.colorized && <ColorIcon title='Кольоризоване фото' css={ToolboxIconCss}
                                onClick={updateImageSrc}
-                    />
+                    />}
+
+                    {image.replicaPhotoUrl && <BeforeAfter title='Порівняти фото' css={ToolboxIconCss}
+                                 onClick={handleImageCompare}
+                    />}
                 </div>}
             </div>
             <div css={ImageDataWrapper}>
@@ -118,16 +140,17 @@ const ImageCSS = css`
 `;
 
 const ToolsWrapper = css`
-    height: 20px;
+    width: 20px;
     position: absolute;
-    top: 30px;
+    bottom: 50px;
     right: 30px;
 `;
 
-const ColorIconCss = css`
+const ToolboxIconCss = css`
     width: 20px;
     height: 20px;
-    cursor: pointer;  
+    cursor: pointer;
+    margin: 3px 0;
 `;
 
 const ImageDataWrapper = css`
