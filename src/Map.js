@@ -61,13 +61,18 @@ const Map = () => {
                     type: 'geojson',
                     data: geo,
                     cluster: true,
-                    clusterMaxZoom: 14,
+                    clusterMaxZoom: 23,
                     clusterRadius: 50
                 };
                 map.current.addSource('photos', source);
                 setClusterLayers(map);
                 handleClusterClick();
                 setIsMapLoaded(true);
+            });
+
+            map.current.on('render', () => {
+                if (!map.current.isSourceLoaded('photos')) return;
+                updateMarkers();
             });
         }
 
@@ -98,16 +103,18 @@ const Map = () => {
                     ]
                 }
             });
+            const width = 40;
+            const bytesPerPixel = 4;
+            const data = new Uint8Array(width * width * bytesPerPixel);
+            map.current.addImage('gradient', { width: width, height: width, data: data });
             map.current.addLayer({
                 id: "unclustered-point",
-                type: "circle",
+                type: "symbol",
                 source: "photos",
                 filter: ["!", ["has", "point_count"]],
-                paint: {
-                    "circle-color": "#11b4da",
-                    "circle-radius": 10,
-                    "circle-stroke-width": 1,
-                    "circle-stroke-color": "#fff"
+                layout: {
+                    'icon-image': 'gradient',
+                    'icon-allow-overlap': true
                 }
             });
             map.current.addLayer({
@@ -152,6 +159,51 @@ const Map = () => {
                 let images = convertFeaturesToImages(e.features);
                 dispatch(update(images));
             });
+        };
+
+        const markers = {};
+        let markersOnScreen = {};
+
+        function updateMarkers() {
+            const newMarkers = {};
+            const features = map.current.querySourceFeatures('photos');
+
+            for (const feature of features) {
+                const props = feature.properties;
+                if (props.cluster) continue;
+                const coords = feature.geometry.coordinates;
+                const id = props.title;
+
+                let marker = markers[id];
+                if (!marker) {
+                    const el = createImageIcon(props);
+                    marker = markers[id] = new mapboxgl.Marker({
+                        element: el
+                    }).setLngLat(coords);
+                }
+                newMarkers[id] = marker;
+
+                if (!markersOnScreen[id]) marker.addTo(map.current);
+            }
+            // for every marker we've added previously, remove those that are no longer visible
+            for (const id in markersOnScreen) {
+                if (!newMarkers[id]) markersOnScreen[id].remove();
+            }
+            markersOnScreen = newMarkers;
+        }
+        function createImageIcon(props) {
+            let html = `<div style="width: 40px; 
+                height: 40px; 
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-image: url('${props.thumbUrl}');
+                border: 1px solid #C3C7DD;
+                box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
+                "></div>`;
+            const el = document.createElement('div');
+            el.innerHTML = html;
+            return el.firstChild;
         }
 
         // Clean up on unmount
