@@ -167,7 +167,6 @@ const Map = () => {
         function updateMarkers() {
             const newMarkers = {};
             const features = map.current.querySourceFeatures('photos');
-
             for (const feature of features) {
                 const props = feature.properties;
                 if (props.cluster) continue;
@@ -197,7 +196,7 @@ const Map = () => {
                 background-position: center center;
                 background-repeat: no-repeat;
                 background-size: cover;
-                background-image: url('${props.thumbUrl}');
+                background-image: url('${props.iconThumbUrl}');
                 border: 1px solid #C3C7DD;
                 box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
                 "></div>`;
