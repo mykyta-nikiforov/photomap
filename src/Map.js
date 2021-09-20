@@ -138,18 +138,8 @@ const Map = () => {
                     clusterSource = map.current.getSource('photos');
 
                 clusterSource.getClusterLeaves(clusterId, point_count, 0, function (err, features) {
-                    let coordinates = features[0].geometry.coordinates.slice();
-
-                    // Ensure that if the map is zoomed out such that multiple
-                    // copies of the feature are visible, the popup appears
-                    // over the copy being pointed to.
-                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                    }
-
                     let images = convertFeaturesToImages(features);
-                    dispatch(update(images));
-                });
+                    dispatch(update(images));                });
             });
             map.current.on('click', 'unclustered-point', function (e) {
                 let coordinates = e.features[0].geometry.coordinates.slice();
