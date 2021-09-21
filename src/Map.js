@@ -77,55 +77,28 @@ const Map = () => {
         }
 
         function setClusterLayers() {
-            map.current.addLayer({
-                id: "clusters",
-                type: "circle",
-                source: "photos",
-                filter: ["has", "point_count"],
-                paint: {
-                    "circle-color": [
-                        "step",
-                        ["get", "point_count"],
-                        "#51bbd6",
-                        20,
-                        "#f1f075",
-                        50,
-                        "#f28cb1"
-                    ],
-                    "circle-radius": [
-                        "step",
-                        ["get", "point_count"],
-                        20,
-                        100,
-                        30,
-                        750,
-                        40
-                    ]
-                }
-            });
             const width = 40;
             const bytesPerPixel = 4;
             const data = new Uint8Array(width * width * bytesPerPixel);
             map.current.addImage('gradient', { width: width, height: width, data: data });
+
+            map.current.addLayer({
+                id: "clusters",
+                type: "symbol",
+                source: "photos",
+                filter: ['==', 'cluster', true],
+                layout: {
+                    'icon-image': 'gradient'
+                }
+            });
             map.current.addLayer({
                 id: "unclustered-point",
                 type: "symbol",
                 source: "photos",
-                filter: ["!", ["has", "point_count"]],
+                filter: ['!=', 'cluster', true],
                 layout: {
                     'icon-image': 'gradient',
                     'icon-allow-overlap': true
-                }
-            });
-            map.current.addLayer({
-                id: "cluster-count",
-                type: "symbol",
-                source: "photos",
-                filter: ["has", "point_count"],
-                layout: {
-                    "text-field": "{point_count_abbreviated}",
-                    "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-                    "text-size": 12
                 }
             });
         }
@@ -137,57 +110,96 @@ const Map = () => {
                     point_count = features[0].properties.point_count,
                     clusterSource = map.current.getSource('photos');
 
-                clusterSource.getClusterLeaves(clusterId, point_count, 0, function (err, features) {
-                    let images = convertFeaturesToImages(features);
-                    dispatch(update(images));                });
+                clusterSource.getClusterLeaves(clusterId, point_count, 0, function (err, leaves) {
+                    dispatch(update(convertFeaturesToImages(leaves)));
+                });
             });
             map.current.on('click', 'unclustered-point', function (e) {
-                let coordinates = e.features[0].geometry.coordinates.slice();
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                let images = convertFeaturesToImages(e.features);
-                dispatch(update(images));
+                dispatch(update(convertFeaturesToImages(e.features)));
             });
         };
 
         const markers = {};
         let markersOnScreen = {};
 
-        function updateMarkers() {
+        async function updateMarkers() {
+            const source = map.current.getSource("photos")
             const newMarkers = {};
             const features = map.current.querySourceFeatures('photos');
             for (const feature of features) {
                 const props = feature.properties;
-                if (props.cluster) continue;
                 const coords = feature.geometry.coordinates;
-                const id = props.title;
+                let id;
+                let iconThumbUrl;
+                if (props.cluster) {
+                    iconThumbUrl = await getClusterIcon(source, props.cluster_id);
+                    // iconThumbUrl = "https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg"
+                    id = props.cluster_id;
 
-                let marker = markers[id];
-                if (!marker) {
-                    const el = createImageIcon(props);
-                    marker = markers[id] = new mapboxgl.Marker({
-                        element: el
-                    }).setLngLat(coords);
+                    let marker = markers[id];
+                    if (!marker) {
+                        const el = createClusterImageIcon(iconThumbUrl);
+                        marker = markers[id] = new mapboxgl.Marker({
+                            element: el
+                        }).setLngLat(coords);
+                    }
+                    newMarkers[id] = marker;
+
+                    if (!markersOnScreen[id]) marker.addTo(map.current);
+                } else {
+                    iconThumbUrl = props.iconThumbUrl;
+                    id = props.title;
+
+                    let marker = markers[id];
+                    if (!marker) {
+                        const el = createImageIcon(iconThumbUrl);
+                        marker = markers[id] = new mapboxgl.Marker({
+                            element: el
+                        }).setLngLat(coords);
+                    }
+                    newMarkers[id] = marker;
+
+                    if (!markersOnScreen[id]) marker.addTo(map.current);
                 }
-                newMarkers[id] = marker;
-
-                if (!markersOnScreen[id]) marker.addTo(map.current);
             }
             // for every marker we've added previously, remove those that are no longer visible
             for (const id in markersOnScreen) {
-                if (!newMarkers[id]) markersOnScreen[id].remove();
+                if (!newMarkers[id]){
+                    markersOnScreen[id].remove();
+                }
             }
             markersOnScreen = newMarkers;
         }
-        function createImageIcon(props) {
+        function getClusterIcon(source, clusterId) {
+            return new Promise((resolve) => {
+                source.getClusterLeaves(clusterId, 1, 0, (err, aFeatures) => {
+                    if (err) resolve(null);
+                    resolve(aFeatures[0].properties.iconThumbUrl);
+                });
+            });
+        }
+        function createImageIcon(iconThumbUrl) {
             let html = `<div style="width: 40px; 
                 height: 40px; 
                 background-position: center center;
                 background-repeat: no-repeat;
                 background-size: cover;
-                background-image: url('${props.iconThumbUrl}');
+                background-image: url('${iconThumbUrl}');
                 border: 1px solid #C3C7DD;
+                box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
+                "></div>`;
+            const el = document.createElement('div');
+            el.innerHTML = html;
+            return el.firstChild;
+        }
+        function createClusterImageIcon(iconThumbUrl) {
+            let html = `<div style="width: 50px; 
+                height: 50px; 
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-image: url('${iconThumbUrl}');
+                border: 2px solid #C3C7DD;
                 box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
                 "></div>`;
             const el = document.createElement('div');
