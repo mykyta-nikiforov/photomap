@@ -6,6 +6,7 @@ import Nouislider from "nouislider-react";
 import "nouislider/distribute/nouislider.css";
 import {useDispatch} from "react-redux";
 import {filterByYears} from "../geoSlice";
+import './LeftPanel.css';
 
 export const sliderStartYear = 1850;
 export const sliderEndYear = 2000;
@@ -29,7 +30,7 @@ function LeftPanel() {
     }, [yearFilterStart, yearFilterEnd]);
 
     return (
-        <div css={panelCss}>
+        <div class="left-panel-wrapper">
             <div css={headerCss}>
                 <div css={logoContainerCss}>
                     <a target="_blank" href="https://wikibilhorod.info">
@@ -37,7 +38,7 @@ function LeftPanel() {
                              src={Logo}/>
                     </a>
                 </div>
-                <div css={sloganCss}>Карта старих фотографій<br/>Білгород-Дністровщини</div>
+                <div class="slogan">Карта старих фотографій<br/>Білгород-Дністровщини</div>
             </div>
             <div css={sliderContainerCss}>
                 <div css={timeRangeSummary}
@@ -61,14 +62,6 @@ function LeftPanel() {
     );
 }
 
-const panelCss = css`
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 50;
-    width: 22vw;
-`;
-
 const headerCss = css`
     background-color: #fff;
     width: 100%;
@@ -84,16 +77,9 @@ const logoCss = css`
     width: 100%;
 `;
 
-const sloganCss = css`
-    display: inline-block;
-    margin-left: 1vw;
-    font-size: 1vw;
-    vertical-align: middle;
-`;
-
 const sliderContainerCss = css`
     margin-right: 40px;
-    margin-top: 15px;
+    margin-top: 8px;
     background-color: white;
     padding-bottom: 5px;
 `;
