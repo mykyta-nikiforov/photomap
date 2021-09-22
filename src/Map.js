@@ -125,7 +125,6 @@ const Map = () => {
         let markersOnScreen = {};
 
         function updateMarkers() {
-            const source = map.current.getSource("photos")
             const newMarkers = {};
             const features = map.current.querySourceFeatures('photos');
             for (const feature of features) {
@@ -135,33 +134,20 @@ const Map = () => {
                 let iconThumbUrl;
                 if (props.cluster) {
                     id = props.cluster_id;
-                    let nearest = nearestPoint(turf.point(coords), geo);
-                    iconThumbUrl = nearest.properties.iconThumbUrl;
-                    let marker = markers[id];
-                    if (!marker) {
-                        const el = createClusterImageIcon(iconThumbUrl, props.point_count);
-                        marker = markers[id] = new mapboxgl.Marker({
-                            element: el
-                        }).setLngLat(coords);
-                    }
-                    newMarkers[id] = marker;
-
-                    if (!markersOnScreen[id]) marker.addTo(map.current);
+                    iconThumbUrl = nearestPoint(turf.point(coords), geo)
+                        .properties.iconThumbUrl;
                 } else {
-                    iconThumbUrl = props.iconThumbUrl;
                     id = props.title;
-
-                    let marker = markers[id];
-                    if (!marker) {
-                        const el = createImageIcon(iconThumbUrl);
-                        marker = markers[id] = new mapboxgl.Marker({
-                            element: el
-                        }).setLngLat(coords);
-                    }
-                    newMarkers[id] = marker;
-
-                    if (!markersOnScreen[id]) marker.addTo(map.current);
+                    iconThumbUrl = props.iconThumbUrl;
                 }
+                let marker = markers[id];
+                if (!marker) {
+                    marker = markers[id] = new mapboxgl.Marker({
+                        element: createImageIconHtml(iconThumbUrl, props.point_count)
+                    }).setLngLat(coords);
+                }
+                newMarkers[id] = marker;
+                if (!markersOnScreen[id]) marker.addTo(map.current);
             }
             // for every marker we've added previously, remove those that are no longer visible
             for (const id in markersOnScreen) {
@@ -172,35 +158,13 @@ const Map = () => {
             markersOnScreen = newMarkers;
         }
 
-        function createImageIcon(iconThumbUrl) {
-            let html = `<div style="width: 40px; 
-                height: 40px; 
-                background-position: center center;
-                background-repeat: no-repeat;
-                background-size: cover;
-                background-image: url('${iconThumbUrl}');
-                border: 1px solid #C3C7DD;
-                box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
-                "></div>`;
-            const el = document.createElement('div');
-            el.innerHTML = html;
-            return el.firstChild;
-        }
-
-        function createClusterImageIcon(iconThumbUrl, pointsAmount) {
-            let html = `<div style="width: 40px; 
-                height: 40px; 
-                background-position: center center;
-                background-repeat: no-repeat;
-                background-size: cover;
-                background-image: url('${iconThumbUrl}');
-                border: 1px solid #C3C7DD;
-                box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
-                ">
-                <div class="clusterFoot">
-                <span class="clusterCount">${pointsAmount}</span>
-</div>
-</div>`;
+        function createImageIconHtml(iconThumbUrl, pointsAmount) {
+            let html = `<div class="marker-icon"
+                             style="background-image: url('${iconThumbUrl}');">`
+                + (pointsAmount ? `<div class="cluster-foot">
+                                       <span class="cluster-count">${pointsAmount}</span>
+                                   </div>` : "")
+            + `</div>`;
             const el = document.createElement('div');
             el.innerHTML = html;
             return el.firstChild;

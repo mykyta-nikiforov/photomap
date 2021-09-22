@@ -20,7 +20,7 @@
   height: 400px;  /* add this */
 }
 
-.clusterFoot {
+.cluster-foot {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -31,12 +31,30 @@
   background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
 }
 
-.clusterCount {
+.cluster-count {
   vertical-align: middle;
   color: #f2f2f2;
-  font-size: 11px;
-  line-height: 11px;
-  font-weight: bold;
+  font-size: 13px;
+  line-height: 15px;
+  font-weight: bolder;
   text-shadow: 1px 1px 0 black,-1px 1px 0 black,1px -1px 0 black,-1px -1px 0 black;
   font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+}
+
+.marker-icon {
+  width: 40px;
+  height: 40px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 1px solid #C3C7DD;
+  box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
+  cursor: pointer;
+}
+
+.marker-icon:hover .cluster-foot {
+  line-height: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%)
 }
