@@ -99,7 +99,7 @@ const Gallery = props => {
     return images.length === 0 ? null : (
         <div css={GalleryContainerCSS} className="galleryContainer">
             <div css={GalleryTopPanel}>
-                <div css={LeftPanelToolbox}>
+                <div css={toolboxCss}>
                     <label css={labelCss}>
                         <Toggle
                             defaultChecked={isDisplayColorized}
@@ -110,7 +110,7 @@ const Gallery = props => {
                 </div>
             </div>
             <CloseButton onClick={closeGallery}/>
-            <div css={ImagesContainerCSS}>
+            <div class={'images-container'}>
                 <ul css={ulCSS} className="itemsContainer">
                     {images.map((image, i) => (
                         <li ref={wrapperRef}>
@@ -188,7 +188,7 @@ const GalleryTopPanel = css`
     z-index: 500;
 `;
 
-const LeftPanelToolbox = css`
+const toolboxCss = css`
     margin-top: 8px;    
     margin-left: 60px;
 `;
@@ -199,10 +199,6 @@ const labelCss = css`
     justify-content: center;
     width: 210px;
 `;
-
-const ImagesContainerCSS = css`
-                    margin: 53px 20px 10px 60px;
-                    `;
 
 const ulCSS = css`
                     display: flex;

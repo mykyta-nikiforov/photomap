@@ -1,0 +1,28 @@
+.tool-wrapper {
+    height: 23px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, .7);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    width: 18px;
+    height: 18px;
+    opacity: 75%;
+    margin: 0 2px;
+}
+
+@media only screen and (max-width: 600px) {
+    .tool-wrapper {
+        height: 10px;
+    }
+    .icon {
+        width: 8px;
+        height: 8px;
+    }
+}

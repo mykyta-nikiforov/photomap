@@ -6,6 +6,7 @@ import useWindowDimensions from "../util/useWindowDimensions";
 import {ReactComponent as ColorIcon} from "../img/chromatic.svg";
 import {ReactComponent as BeforeAfter} from '../img/before-after.svg'
 import {useSelector} from "react-redux";
+import './ImageThumbnail.css';
 
 const ImageThumbnail = props => {
     const image = props.image;
@@ -13,12 +14,15 @@ const ImageThumbnail = props => {
     const isDisplayColorized = useSelector((state) => state.gallery.isDisplayColorized);
     const thumbUrl = isDisplayColorized && image.colorized ? image.colorized.thumbUrl : image.thumbUrl ;
 
+    const {windowWidth, windowHeight} = useWindowDimensions();
+    const imageHeightInVh = windowWidth < 600 ? '10' : '25';
+
     // Loaded state
     const [loaded, setLoaded] = useState(false);
-    const imageStyle = !loaded ? {display: "none"} : {};
+    const imageStyle = !loaded ? {display: "none"} : {height: imageHeightInVh + 'vh',
+    };
 
     // Count image width
-    const {windowHeight} = useWindowDimensions();
     const heightInPixels = windowHeight * imageHeightInVh / 100;
     const ratio = heightInPixels / image.height;
     const widthInPixels = image.width * ratio;
@@ -46,39 +50,17 @@ const ImageThumbnail = props => {
             onClick={props.onClick}
             onLoad={() => setLoaded(true)}
         />
-        {loaded && (image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
-            {image.colorized && <ColorIcon title='Кольоризоване фото' css={IconCss}/>}
-            {image.replicaPhotoUrl && <BeforeAfter title='Доступне фотопорівняння' css={IconCss}/>}
+        {loaded && (image.colorized || image.replicaPhotoUrl) && <div class={'tool-wrapper'}>
+            {image.colorized && <ColorIcon title='Кольоризоване фото' class={'icon'}/>}
+            {image.replicaPhotoUrl && <BeforeAfter title='Доступне фотопорівняння' class={'icon'}/>}
         </div>}
     </div>)
 }
 
-const imageHeightInVh = '25';
-
-export const imgCSS = {
-    'height': imageHeightInVh + 'vh',
+const imgCSS = {
     'object-fit': 'cover',
     'vertical-align': 'bottom',
     'cursor': 'pointer'
 };
-
-const ToolsWrapper = css`
-    height: 23px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: rgba(255, 255, 255, .7);
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const IconCss = css`
-    width: 18px;
-    height: 18px;
-    opacity: 75%;
-    margin: 0 2px;
-`;
 
 export default ImageThumbnail

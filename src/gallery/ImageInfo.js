@@ -69,7 +69,7 @@ const ImageInfo = forwardRef((props, ref) => {
     const widthInPixels = image.width * ratio;
 
     return (
-        <div css={ImageContentWrapper}
+        <div class={'image-content-wrapper'}
              ref={ref}>
             {arrows}
             <div css={ImageWrapperCSS}>
@@ -118,20 +118,6 @@ const ImageInfo = forwardRef((props, ref) => {
         </div>
     );
 });
-
-const ImageContentWrapper = css`
-    height: 66vh;
-    width: calc(100% - 60px);
-    position: absolute;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    background: #FFF;
-    overflow-y: scroll;
-    margin: 0px 10px 10px 60px; 
-    overflow-x: hidden;
-    z-index: 200;
-`;
 
 const ImageWrapperCSS = css`
 width: 60%;
