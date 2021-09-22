@@ -19,3 +19,24 @@
 .carousel-inner .item {
   height: 400px;  /* add this */
 }
+
+.clusterFoot {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  line-height: 11px;
+  text-align: center;
+  background: transparent;
+  background: -webkit-linear-gradient(top, transparent 0%, rgba(0,0,0,0.7) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.clusterCount {
+  vertical-align: middle;
+  color: #f2f2f2;
+  font-size: 11px;
+  line-height: 11px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 black,-1px 1px 0 black,1px -1px 0 black,-1px -1px 0 black;
+  font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+}

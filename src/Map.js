@@ -4,6 +4,8 @@ import './Map.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {update} from './gallery/gallerySlice'
 import convertFeaturesToImages from "./converter/FeaturesToImagesConverter";
+import nearestPoint from "@turf/nearest-point";
+import * as turf from "@turf/helpers";
 
 mapboxgl.accessToken =
     'pk.eyJ1IjoibmlraWZvcm92cGl6emEiLCJhIjoiY2o5ajE2dDVmMHpqOTJxcDd4MHJ5YW5rbSJ9.mIuGjdr5w1vXbyTshvHcww';
@@ -80,7 +82,7 @@ const Map = () => {
             const width = 40;
             const bytesPerPixel = 4;
             const data = new Uint8Array(width * width * bytesPerPixel);
-            map.current.addImage('gradient', { width: width, height: width, data: data });
+            map.current.addImage('gradient', {width: width, height: width, data: data});
 
             map.current.addLayer({
                 id: "clusters",
@@ -122,7 +124,7 @@ const Map = () => {
         const markers = {};
         let markersOnScreen = {};
 
-        async function updateMarkers() {
+        function updateMarkers() {
             const source = map.current.getSource("photos")
             const newMarkers = {};
             const features = map.current.querySourceFeatures('photos');
@@ -132,13 +134,12 @@ const Map = () => {
                 let id;
                 let iconThumbUrl;
                 if (props.cluster) {
-                    iconThumbUrl = await getClusterIcon(source, props.cluster_id);
-                    // iconThumbUrl = "https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg"
                     id = props.cluster_id;
-
+                    let nearest = nearestPoint(turf.point(coords), geo);
+                    iconThumbUrl = nearest.properties.iconThumbUrl;
                     let marker = markers[id];
                     if (!marker) {
-                        const el = createClusterImageIcon(iconThumbUrl);
+                        const el = createClusterImageIcon(iconThumbUrl, props.point_count);
                         marker = markers[id] = new mapboxgl.Marker({
                             element: el
                         }).setLngLat(coords);
@@ -164,20 +165,13 @@ const Map = () => {
             }
             // for every marker we've added previously, remove those that are no longer visible
             for (const id in markersOnScreen) {
-                if (!newMarkers[id]){
+                if (!newMarkers[id]) {
                     markersOnScreen[id].remove();
                 }
             }
             markersOnScreen = newMarkers;
         }
-        function getClusterIcon(source, clusterId) {
-            return new Promise((resolve) => {
-                source.getClusterLeaves(clusterId, 1, 0, (err, aFeatures) => {
-                    if (err) resolve(null);
-                    resolve(aFeatures[0].properties.iconThumbUrl);
-                });
-            });
-        }
+
         function createImageIcon(iconThumbUrl) {
             let html = `<div style="width: 40px; 
                 height: 40px; 
@@ -192,16 +186,21 @@ const Map = () => {
             el.innerHTML = html;
             return el.firstChild;
         }
-        function createClusterImageIcon(iconThumbUrl) {
-            let html = `<div style="width: 50px; 
-                height: 50px; 
+
+        function createClusterImageIcon(iconThumbUrl, pointsAmount) {
+            let html = `<div style="width: 40px; 
+                height: 40px; 
                 background-position: center center;
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-image: url('${iconThumbUrl}');
-                border: 2px solid #C3C7DD;
+                border: 1px solid #C3C7DD;
                 box-shadow: 0 0 0 1px #000, 0 2px 4px 0px #222;
-                "></div>`;
+                ">
+                <div class="clusterFoot">
+                <span class="clusterCount">${pointsAmount}</span>
+</div>
+</div>`;
             const el = document.createElement('div');
             el.innerHTML = html;
             return el.firstChild;
