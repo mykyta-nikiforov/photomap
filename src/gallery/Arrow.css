@@ -1,0 +1,42 @@
+.arrow-container {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    height: 45px;
+    width: 45px;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    align-items: center;
+    transition: transform ease-in 0.1s;
+    z-index: 300;
+}
+
+.left-arrow {
+    left: 60px;
+}
+
+.right-arrow {
+    right: 10px;
+}
+
+.arrow-container:hover {
+    transform: scale(1.1);
+}
+
+.arrow-img:focus {
+    outline: 0;
+}
+
+@media only screen and (max-width: 600px) {
+    .arrow-container {
+        top: 30%;
+    }
+    .left-arrow {
+        left: 0;
+    }
+    .right-arrow {
+        right: 0;
+    }
+}

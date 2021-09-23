@@ -9,7 +9,7 @@ import './ImageInfo.css';
 import FadeIn from "react-fade-in";
 import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
 import {ReactComponent as BeforeAfter} from '../img/before-after.svg'
-import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
+import {ReactCompareSlider, ReactCompareSliderImage} from 'react-compare-slider';
 import useWindowDimensions from "../util/useWindowDimensions";
 
 const ImageInfo = forwardRef((props, ref) => {
@@ -58,9 +58,9 @@ const ImageInfo = forwardRef((props, ref) => {
     };
 
     useEffect(() => {
-            setIsDisplayColorizedLocal(isDisplayColorized);
-            setIsDisplayColorizedLocalUpdated(false);
-        }, [isDisplayColorized]);
+        setIsDisplayColorizedLocal(isDisplayColorized);
+        setIsDisplayColorizedLocalUpdated(false);
+    }, [isDisplayColorized]);
 
     // Image sizes
     const {windowHeight} = useWindowDimensions();
@@ -69,69 +69,58 @@ const ImageInfo = forwardRef((props, ref) => {
     const widthInPixels = image.width * ratio;
 
     return (
-        <div class={'image-content-wrapper'}
-             ref={ref}>
+        <div class={'image-arrows-wrapper'}>
             {arrows}
-            <div css={ImageWrapperCSS}>
-                {!isImageLoaded && <div>
-                    <SpinnerDiamond
-                        color={"#424852"}
-                    />
-                </div>}
-                <FadeIn delay={50}>
-                    {!isDisplayComparator ? <img
-                        style={imageStyle}
-                        css={ImageCSS}
-                        src={imageSrc}
-                        onLoad={() => {
-                            setIsImageLoaded(true);
-                        }}/>
-                        :
-                        <div>
-                            <ReactCompareSlider
-                                style={{maxHeight: heightInPixels, maxWidth: widthInPixels}}
-                                itemOne={<ReactCompareSliderImage src={imageSrc} alt="Оригінальне фото" />}
-                                itemTwo={<ReactCompareSliderImage src={image.replicaPhotoUrl} alt="Сучасна репліка" />}
-                            />
-                        </div>
-                    }
-                </FadeIn>
-                {/* Preload images */}
-                {image.colorized && <img src={image.colorized.photoUrl} style={{display: 'none'}}/>}
-                {image.replicaPhotoUrl && <img src={image.replicaPhotoUrl} style={{display: 'none'}}/>}
-                {(image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
-                    {image.colorized && <ColorIcon title='Кольоризоване фото' css={ToolboxIconCss}
-                               onClick={updateImageSrc}
-                    />}
+            <div class={'image-content-wrapper'}
+                 ref={ref}>
+                <div class={'image-wrapper'}>
+                    {!isImageLoaded && <div>
+                        <SpinnerDiamond
+                            color={"#424852"}
+                        />
+                    </div>}
+                    <FadeIn delay={50}>
+                        {!isDisplayComparator ? <img
+                                style={imageStyle}
+                                class={'image'}
+                                src={imageSrc}
+                                onLoad={() => {
+                                    setIsImageLoaded(true);
+                                }}/>
+                            :
+                            <div>
+                                <ReactCompareSlider
+                                    style={{maxHeight: heightInPixels, maxWidth: widthInPixels}}
+                                    itemOne={<ReactCompareSliderImage src={imageSrc} alt="Оригінальне фото"/>}
+                                    itemTwo={<ReactCompareSliderImage src={image.replicaPhotoUrl}
+                                                                      alt="Сучасна репліка"/>}
+                                />
+                            </div>
+                        }
+                    </FadeIn>
+                    {/* Preload images */}
+                    {image.colorized && <img src={image.colorized.photoUrl} style={{display: 'none'}}/>}
+                    {image.replicaPhotoUrl && <img src={image.replicaPhotoUrl} style={{display: 'none'}}/>}
+                    {(image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
+                        {image.colorized && <ColorIcon title='Кольоризоване фото' css={ToolboxIconCss}
+                                                       onClick={updateImageSrc}
+                        />}
 
-                    {image.replicaPhotoUrl && <BeforeAfter title='Порівняти фото' css={ToolboxIconCss}
-                                 onClick={handleImageCompare}
-                    />}
-                </div>}
-            </div>
-            <div css={ImageDataWrapper}>
-                <div css={DescriptionCSS} dangerouslySetInnerHTML={{__html: image.description}}/>
-                <p><i>Час створення:</i> <span dangerouslySetInnerHTML={{__html: image.dateTimeOriginal}}/></p>
-                {image.author && <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>}
-                <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
+                        {image.replicaPhotoUrl && <BeforeAfter title='Порівняти фото' css={ToolboxIconCss}
+                                                               onClick={handleImageCompare}
+                        />}
+                    </div>}
+                </div>
+                <div class={'image-data-wrapper'}>
+                    <div class={'description'} dangerouslySetInnerHTML={{__html: image.description}}/>
+                    <p><i>Час створення:</i> <span dangerouslySetInnerHTML={{__html: image.dateTimeOriginal}}/></p>
+                    {image.author && <p><i>Автор:</i> <span dangerouslySetInnerHTML={{__html: image.author}}/></p>}
+                    <div><a target="_blank" href={image.url}><small>Детальніше про зображення</small></a></div>
+                </div>
             </div>
         </div>
     );
 });
-
-const ImageWrapperCSS = css`
-width: 60%;
-padding: 4vh 10vh;
-display: flex;
-align-items: center;
-justify-content: center;
-position: relative;
-`;
-
-const ImageCSS = css`
-    max-width: 100%;
-    max-height: 62vh;
-`;
 
 const ToolsWrapper = css`
     width: 20px;
@@ -145,17 +134,6 @@ const ToolboxIconCss = css`
     height: 20px;
     cursor: pointer;
     margin: 3px 0;
-`;
-
-const ImageDataWrapper = css`
-    width: 40%;
-    margin: 6vh 0;
-`;
-
-const DescriptionCSS = css`
-    font-weight: 700;
-    font-size: 20px;
-    margin-bottom: 4vh;
 `;
 
 const imageHeightInVh = '62';
