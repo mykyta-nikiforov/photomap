@@ -101,12 +101,12 @@ const ImageInfo = forwardRef((props, ref) => {
                     {/* Preload images */}
                     {image.colorized && <img src={image.colorized.photoUrl} style={{display: 'none'}}/>}
                     {image.replicaPhotoUrl && <img src={image.replicaPhotoUrl} style={{display: 'none'}}/>}
-                    {(image.colorized || image.replicaPhotoUrl) && <div css={ToolsWrapper}>
-                        {image.colorized && <ColorIcon title='Кольоризоване фото' css={ToolboxIconCss}
+                    {(image.colorized || image.replicaPhotoUrl) && <div className={'toolbox-wrapper'}>
+                        {image.colorized && <ColorIcon title='Кольоризоване фото' className={'toolbox-icon'}
                                                        onClick={updateImageSrc}
                         />}
 
-                        {image.replicaPhotoUrl && <BeforeAfter title='Порівняти фото' css={ToolboxIconCss}
+                        {image.replicaPhotoUrl && <BeforeAfter title='Порівняти фото' className={'toolbox-icon'}
                                                                onClick={handleImageCompare}
                         />}
                     </div>}
@@ -121,20 +121,6 @@ const ImageInfo = forwardRef((props, ref) => {
         </div>
     );
 });
-
-const ToolsWrapper = css`
-    width: 20px;
-    position: absolute;
-    bottom: 50px;
-    right: 30px;
-`;
-
-const ToolboxIconCss = css`
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    margin: 3px 0;
-`;
 
 const imageHeightInVh = '62';
 
