@@ -63,7 +63,9 @@ const ImageInfo = forwardRef((props, ref) => {
     }, [isDisplayColorized]);
 
     // Image sizes
-    const {windowHeight} = useWindowDimensions();
+    const {windowHeight, windowWidth} = useWindowDimensions();
+    const imageHeightInVh = windowWidth < 600 ? '33' : '62';
+
     const heightInPixels = windowHeight * imageHeightInVh / 100;
     const ratio = heightInPixels / image.height;
     const widthInPixels = image.width * ratio;
@@ -73,7 +75,7 @@ const ImageInfo = forwardRef((props, ref) => {
             {arrows}
             <div class={'image-content-wrapper'}
                  ref={ref}>
-                <div class={'image-wrapper'}>
+                <div className={'image-wrapper'} style={{height: `${heightInPixels}px`}}>
                     {!isImageLoaded && <div>
                         <SpinnerDiamond
                             color={"#424852"}
@@ -121,8 +123,5 @@ const ImageInfo = forwardRef((props, ref) => {
         </div>
     );
 });
-
-const imageHeightInVh = '62';
-
 
 export default ImageInfo
