@@ -16,12 +16,21 @@
     transition: max-height 300ms;
 }
 
+.gallery-toolbox {
+    margin-top: 8px;
+    margin-left: 60px;
+}
+
 .images-container {
     margin: 53px 20px 10px 60px;
 }
 
 @media only screen and (max-width: 600px) {
     .images-container {
+        margin-left: 20px;
+    }
+
+    .gallery-toolbox {
         margin-left: 20px;
     }
 }

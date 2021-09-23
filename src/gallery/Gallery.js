@@ -99,7 +99,7 @@ const Gallery = props => {
     return images.length === 0 ? null : (
         <div css={GalleryContainerCSS} className="galleryContainer">
             <div css={GalleryTopPanel}>
-                <div css={toolboxCss}>
+                <div className={'gallery-toolbox'}>
                     <label css={labelCss}>
                         <Toggle
                             defaultChecked={isDisplayColorized}
@@ -186,11 +186,6 @@ const GalleryTopPanel = css`
     background-color:white;
     position: fixed;
     z-index: 500;
-`;
-
-const toolboxCss = css`
-    margin-top: 8px;    
-    margin-left: 60px;
 `;
 
 const labelCss = css`
