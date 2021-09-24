@@ -43,6 +43,7 @@ function LeftPanel() {
             <div css={sliderContainerCss}>
                 <div css={timeRangeSummary}
                      onClick={() => setIsRangeSliderOpened(!isRangeSliderOpened)}>
+                    <div style={{marginRight: "10px"}}>Роки: </div>
                     <div css={timeRangeLabel}>{yearFilterStart}–{yearFilterEnd}</div>
                     <div css={arrowDown}></div>
                 </div>
