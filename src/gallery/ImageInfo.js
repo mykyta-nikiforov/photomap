@@ -11,6 +11,8 @@ import {ReactComponent as ColorIcon} from '../img/chromatic.svg'
 import {ReactComponent as BeforeAfter} from '../img/before-after.svg'
 import {ReactCompareSlider, ReactCompareSliderImage} from 'react-compare-slider';
 import useWindowDimensions from "../util/useWindowDimensions";
+import Lightbox from "react-image-lightbox";
+import 'react-image-lightbox/style.css';
 
 const ImageInfo = forwardRef((props, ref) => {
     const image = props.image;
@@ -64,11 +66,15 @@ const ImageInfo = forwardRef((props, ref) => {
 
     // Image sizes
     const {windowHeight, windowWidth} = useWindowDimensions();
-    const imageHeightInVh = windowWidth < 600 ? '33' : '62';
+    const isMobile = windowWidth < 600;
+    const imageHeightInVh = isMobile ? '33' : '62';
 
     const heightInPixels = windowHeight * imageHeightInVh / 100;
     const ratio = heightInPixels / image.height;
     const widthInPixels = image.width * ratio;
+
+    // Lightbox
+    const [lightbox, setLightbox] = useState(false);
 
     return (
         <div class={'image-arrows-wrapper'}>
@@ -88,7 +94,11 @@ const ImageInfo = forwardRef((props, ref) => {
                                 src={imageSrc}
                                 onLoad={() => {
                                     setIsImageLoaded(true);
-                                }}/>
+                                }}
+                                onClick={() => {
+                                    setLightbox(true);
+                                }}
+                            />
                             :
                             <div>
                                 <ReactCompareSlider
@@ -112,6 +122,14 @@ const ImageInfo = forwardRef((props, ref) => {
                                                                onClick={handleImageCompare}
                         />}
                     </div>}
+                    {lightbox &&
+                    <Lightbox
+                        toolbarButtons={[]}
+                        mainSrc={imageSrc}
+                        imagePadding={isMobile ? 0 : 55}
+                        onCloseRequest={() => setLightbox(false)}
+                    />
+                    }
                 </div>
                 <div class={'image-data-wrapper'}>
                     <div class={'description'} dangerouslySetInnerHTML={{__html: image.description}}/>
