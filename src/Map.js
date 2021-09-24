@@ -160,7 +160,7 @@ const Map = () => {
 
         function createImageIconHtml(iconThumbUrl, pointsAmount) {
             let html = `<div class="marker-icon"
-                             style="background-image: url('${iconThumbUrl}');">`
+                             style="background-image: url(&quot;${iconThumbUrl}&quot;);">`
                 + (pointsAmount ? `<div class="cluster-foot">
                                        <span class="cluster-count">${pointsAmount}</span>
                                    </div>` : "")
